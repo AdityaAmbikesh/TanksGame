@@ -11,7 +11,7 @@ public class TankHealth : MonoBehaviour
     public GameObject m_ExplosionPrefab;
     
     
-    private AudioSource m_ExplosionAudio;          
+//    private AudioSource m_ExplosionAudio;          
     private ParticleSystem m_ExplosionParticles;   
     private float m_CurrentHealth;  
     private bool m_Dead;            
@@ -20,7 +20,7 @@ public class TankHealth : MonoBehaviour
     private void Awake()
     {
         m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
-        m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
+//        m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
 
         m_ExplosionParticles.gameObject.SetActive(false);
     }
@@ -77,7 +77,7 @@ public class TankHealth : MonoBehaviour
         m_ExplosionParticles.Play ();
 
         // Play the tank explosion sound effect.
-        m_ExplosionAudio.Play();
+//        m_ExplosionAudio.Play();
 
         // Turn the tank off.
         gameObject.SetActive (false);
