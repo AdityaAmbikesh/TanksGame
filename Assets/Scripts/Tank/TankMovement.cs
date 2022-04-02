@@ -5,12 +5,12 @@ public class TankMovement : MonoBehaviour
     public int m_PlayerNumber = 1;         
     public float m_Speed = 12f;            
     public float m_TurnSpeed = 180f;       
-    public AudioSource m_MovementAudio;    
-    public AudioClip m_EngineIdling;       
-    public AudioClip m_EngineDriving;      
-    public float m_PitchRange = 0.2f;
+//    public AudioSource m_MovementAudio;    
+//    public AudioClip m_EngineIdling;       
+//    public AudioClip m_EngineDriving;      
+//    public float m_PitchRange = 0.2f;
 
-    /*
+    
     private string m_MovementAxisName;     
     private string m_TurnAxisName;         
     private Rigidbody m_Rigidbody;         
@@ -44,13 +44,17 @@ public class TankMovement : MonoBehaviour
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
-        m_OriginalPitch = m_MovementAudio.pitch;
+//        m_OriginalPitch = m_MovementAudio.pitch;
     }
-    */
+    
 
     private void Update()
     {
         // Store the player's input and make sure the audio for the engine is playing.
+        // The Input strings are set in input manager
+        m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+        m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+        
     }
 
 
@@ -63,17 +67,26 @@ public class TankMovement : MonoBehaviour
     private void FixedUpdate()
     {
         // Move and turn the tank.
+        Move();
+        Turn();
     }
 
 
     private void Move()
     {
         // Adjust the position of the tank based on the player's input.
+        // Use Lerp to smooth the transition
+        Vector3 diffVec = transform.forward * m_MovementInputValue * m_Speed * Time.deltaTime;
+        m_Rigidbody.MovePosition(m_Rigidbody.position + diffVec);
     }
 
 
     private void Turn()
     {
         // Adjust the rotation of the tank based on the player's input.
+        float diffVec = m_TurnInputValue * m_TurnSpeed  * Time.deltaTime;
+        Quaternion rotation = Quaternion.Euler(0, diffVec, 0);
+        // make transition smooth
+        m_Rigidbody.MoveRotation(m_Rigidbody.rotation * rotation);
     }
 }
