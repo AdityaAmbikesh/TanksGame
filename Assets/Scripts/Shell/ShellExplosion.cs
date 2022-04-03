@@ -14,7 +14,7 @@ public class ShellExplosion : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(SetInactiveAfterLifetime(gameObject, m_MaxLifeTime));
+        StartCoroutine(SetInactiveAfterLifetime(m_MaxLifeTime));
     }
 
 
@@ -52,23 +52,15 @@ public class ShellExplosion : MonoBehaviour
             }
 
             // Unparent the particles from the shell.
-            m_ExplosionParticles.transform.parent = null;
+//            m_ExplosionParticles.transform.parent = null;
 
             // Play the particle system.
             m_ExplosionParticles.Play();
 
-            // Play the explosion sound effect.
-//            m_ExplosionAudio.Play();
-
-            // Once the particles have finished, destroy the gameobject they are on.
             ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-//            Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
-            StartCoroutine(SetInactiveAfterLifetime(m_ExplosionParticles.gameObject, mainModule.duration));
+            StartCoroutine(SetInactiveAfterLifetime(mainModule.duration));
 
-
-            // Destroy the shell.
-//            Destroy (gameObject);
-            gameObject.SetActive(false);
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
 
@@ -93,7 +85,7 @@ public class ShellExplosion : MonoBehaviour
         return damage;
     }
 
-    private IEnumerator SetInactiveAfterLifetime(GameObject gameObject, float lifetime)
+    private IEnumerator SetInactiveAfterLifetime(float lifetime)
     {
         yield return new WaitForSeconds(lifetime);
         gameObject.SetActive(false);
