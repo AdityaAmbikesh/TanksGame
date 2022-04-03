@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ShellExplosion : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class ShellExplosion : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, m_MaxLifeTime);
+        StartCoroutine(SetInactiveAfterLifetime(gameObject, m_MaxLifeTime));
     }
 
 
@@ -61,10 +62,13 @@ public class ShellExplosion : MonoBehaviour
 
             // Once the particles have finished, destroy the gameobject they are on.
             ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-            Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
+//            Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
+            StartCoroutine(SetInactiveAfterLifetime(m_ExplosionParticles.gameObject, mainModule.duration));
+
 
             // Destroy the shell.
-            Destroy (gameObject);
+//            Destroy (gameObject);
+            gameObject.SetActive(false);
     }
 
 
@@ -87,5 +91,11 @@ public class ShellExplosion : MonoBehaviour
         damage = Mathf.Max (0f, damage);
 
         return damage;
+    }
+
+    private IEnumerator SetInactiveAfterLifetime(GameObject gameObject, float lifetime)
+    {
+        yield return new WaitForSeconds(lifetime);
+        gameObject.SetActive(false);
     }
 }

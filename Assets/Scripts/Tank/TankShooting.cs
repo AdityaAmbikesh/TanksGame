@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Boo.Lang;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TankShooting : MonoBehaviour
@@ -6,7 +7,11 @@ public class TankShooting : MonoBehaviour
     public int m_PlayerNumber = 1;       
     public Rigidbody m_Shell;            
     public Transform m_FireTransform;    
-    public Slider m_AimSlider;           
+    public Slider m_AimSlider;
+
+    // this number will be per tank, can optimise to global pool
+    // from GameManager(with * number of tanks spawned)
+    public int numberOfPooledObjects = 12;
 //    public AudioSource m_ShootingAudio;  
 //    public AudioClip m_ChargingClip;     
 //    public AudioClip m_FireClip;         
@@ -14,6 +19,7 @@ public class TankShooting : MonoBehaviour
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
 
+    [HideInInspector] public List<Rigidbody> pooledShells;
     
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
@@ -33,6 +39,7 @@ public class TankShooting : MonoBehaviour
         m_FireButton = "Fire" + m_PlayerNumber;
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
+        CreatePooledShells();
     }
     
 
@@ -84,8 +91,19 @@ public class TankShooting : MonoBehaviour
         m_Fired = true;
 
         // Create an instance of the shell and store a reference to it's rigidbody.
-        Rigidbody shellInstance =
-            Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+        Rigidbody shellInstance = GetPooledObject();
+        if (shellInstance != null)
+        {
+            shellInstance.transform.localPosition = m_FireTransform.position;
+            shellInstance.transform.localRotation = m_FireTransform.rotation;
+            shellInstance.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("GameInfo : Failed to get pooled shell Instance");
+            shellInstance = Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+        }
+//      Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
         // Set the shell's velocity to the launch force in the fire position's forward direction.
         shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward; 
@@ -97,4 +115,31 @@ public class TankShooting : MonoBehaviour
         // Reset the launch force.  This is a precaution in case of missing button events.
         m_CurrentLaunchForce = m_MinLaunchForce;
     }
+
+    private void CreatePooledShells()
+    {
+        pooledShells = new List<Rigidbody>();
+        for (int i = 0; i < numberOfPooledObjects; i++)
+        {
+            Rigidbody shell = Instantiate(m_Shell);
+            shell.gameObject.SetActive(false);
+            pooledShells.Add(shell);
+            
+        }
+    }
+
+    private Rigidbody GetPooledObject()
+    {
+        foreach (var shell in pooledShells)
+        {
+            if (!shell.gameObject.activeSelf)
+            {
+                return shell;
+            }
+        }
+
+        return null;
+    }
+    
+    
 }
