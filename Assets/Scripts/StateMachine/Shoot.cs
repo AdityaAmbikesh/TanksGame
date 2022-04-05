@@ -53,12 +53,13 @@ public class Shoot : BaseState
 //        m_BombPlantButton = "Plant" + m_PlayerNumber;
 //
 //        m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
-        CreatePooledShells();
-        CreatePooledBomb();
+ 
         fireTransform = _TankManager.m_FireTransform;
         bombPlantTransform = _TankManager.m_BombPlantTransform;
         numberOfPooledObjects = _TankManager.numberOfPooledObjects;
         m_CurrentLaunchForce = _TankManager.m_CurrentLaunchForce;
+        CreatePooledShells();
+        CreatePooledBomb();
     }
     public override void Enter()
     {

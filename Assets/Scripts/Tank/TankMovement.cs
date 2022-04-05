@@ -2,7 +2,7 @@
 
 public class TankMovement : MonoBehaviour
 {
-    public int m_PlayerNumber = 1;         
+    [HideInInspector]public int m_PlayerNumber;         
     public float m_Speed = 12f;            
     public float m_TurnSpeed = 180f;       
 //    public AudioSource m_MovementAudio;    
@@ -16,12 +16,15 @@ public class TankMovement : MonoBehaviour
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
-    private float m_OriginalPitch;         
+    private float m_OriginalPitch;
+    private TankManager _TankManager;
 
 
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+//        _TankManager = GetComponent<TankManager>();
+//        m_PlayerNumber = _TankManager.m_PlayerNumber;
     }
 
 
