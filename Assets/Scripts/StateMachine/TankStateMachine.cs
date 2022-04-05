@@ -9,7 +9,7 @@ public class TankStateMachine : StateMachine
     public void Setup(TankManager tankManager)
     {
         idleState = new Idle(this, tankManager);
-        moveState = new Move(this);
+        moveState = new Move(this, tankManager);
         shootState = new Shoot(this, tankManager);
     }
 

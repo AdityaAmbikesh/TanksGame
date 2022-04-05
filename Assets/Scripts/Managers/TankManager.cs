@@ -38,10 +38,13 @@ public class TankManager : MonoBehaviour
     private float m_ChargeSpeed;         
     private bool m_Fired;
 
-//    private string m_MovementAxisName;     
-//    private string m_TurnAxisName;  
-//    private float m_MovementInputValue;    
-//    private float m_TurnInputValue;  
+    private string m_MovementAxisName;     
+    private string m_TurnAxisName;  
+    [HideInInspector] public float m_MovementInputValue;    
+    [HideInInspector] public float m_TurnInputValue;
+
+    [HideInInspector] public Rigidbody m_Rigidbody;
+    [HideInInspector] public Transform transform;
 
 
     public void Setup()
@@ -56,13 +59,14 @@ public class TankManager : MonoBehaviour
         m_BombPlantButton = "Plant" + m_PlayerNumber;
 
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
-        GetComponent<TankMovement>().m_PlayerNumber = m_PlayerNumber;
         
-//        m_MovementAxisName = "Vertical" + m_PlayerNumber;
-//        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
-        
+        m_MovementAxisName = "Vertical" + m_PlayerNumber;
+        m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        m_Rigidbody = GetComponent<Rigidbody>();
+        transform = GetComponent<Transform>();
         Debug.Log((_TankStateMachine.shootState == null).ToString());
-        _TankStateMachine.ChangeState(_TankStateMachine.GetInitialState(), _TankStateMachine.shootState);
+        
+        _TankStateMachine.ChangeState(_TankStateMachine.GetInitialState(), _TankStateMachine.moveState);
 
     }
 
@@ -96,13 +100,14 @@ public class TankManager : MonoBehaviour
     
     private void Update()
     {
-//        m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
-//        m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
+        m_MovementInputValue = Input.GetAxis(m_MovementAxisName);
+        m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
         // Track the current state of the fire button and make decisions based on the current launch force.
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
         if (Input.GetButtonDown(m_BombPlantButton))
         {
+            _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
             _TankStateMachine.shootState.PlantBomb();
         }
         else
@@ -110,6 +115,7 @@ public class TankManager : MonoBehaviour
             // If the max force has been exceeded and the shell hasn't yet been launched...
             if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
             {
+                _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
                 // ... use the max force and launch the shell.
                 m_CurrentLaunchForce = m_MaxLaunchForce;
                 _TankStateMachine.shootState.Fire ();
@@ -136,17 +142,18 @@ public class TankManager : MonoBehaviour
             // Otherwise, if the fire button is released and the shell hasn't been launched yet...
             else if (Input.GetButtonUp (m_FireButton) && !m_Fired)
             {
+                _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
                 // ... launch the shell.
                 _TankStateMachine.shootState.Fire ();
             }
         }
     }
     
-//    private void FixedUpdate()
-//    {
-//        // Move and turn the tank.
-//        _TankStateMachine.moveState.MoveTank();
-//        _TankStateMachine.moveState.TurnTank();
-//    }
+    private void FixedUpdate()
+    {
+        // Move and turn the tank.
+        _TankStateMachine.moveState.MoveTank();
+        _TankStateMachine.moveState.TurnTank();
+    }
 
 }
