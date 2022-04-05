@@ -25,6 +25,13 @@ public class TankManager : MonoBehaviour
     public Rigidbody m_Bomb;            
     public Transform m_FireTransform;    
     public Transform m_BombPlantTransform;  
+    
+    public float m_StartingHealth = 100f;          
+    public Slider m_Slider;                        
+    public Image m_FillImage;                      
+    public Color m_FullHealthColor = Color.green;  
+    public Color m_ZeroHealthColor = Color.red;    
+    public GameObject m_ExplosionPrefab;
 
 
 //    [HideInInspector] public TankMovement m_Movement;       
@@ -45,6 +52,10 @@ public class TankManager : MonoBehaviour
 
     [HideInInspector] public Rigidbody m_Rigidbody;
     [HideInInspector] public Transform transform;
+    
+    [HideInInspector] public ParticleSystem m_ExplosionParticles;   
+    private float m_CurrentHealth;  
+    [HideInInspector] public bool m_Dead;  
 
 
     public void Setup()
@@ -65,6 +76,15 @@ public class TankManager : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody>();
         transform = GetComponent<Transform>();
         Debug.Log((_TankStateMachine.shootState == null).ToString());
+        
+        m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
+
+        m_ExplosionParticles.gameObject.SetActive(false);
+        
+        m_CurrentHealth = m_StartingHealth;
+        m_Dead = false;
+
+        SetHealthUI();
         
         _TankStateMachine.ChangeState(_TankStateMachine.GetInitialState(), _TankStateMachine.moveState);
 
@@ -154,6 +174,33 @@ public class TankManager : MonoBehaviour
         // Move and turn the tank.
         _TankStateMachine.moveState.MoveTank();
         _TankStateMachine.moveState.TurnTank();
+    }
+    
+    private void SetHealthUI()
+    {
+        // Adjust the value and colour of the slider.
+        // Set the slider's value appropriately.
+        m_Slider.value = m_CurrentHealth;
+
+        // Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
+        m_FillImage.color = Color.Lerp (m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+    }
+    
+    public void TakeDamage(float amount)
+    {
+        // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
+        // Reduce current health by the amount of damage done.
+        m_CurrentHealth -= amount;
+
+        // Change the UI elements appropriately.
+        SetHealthUI ();
+
+        // If the current health is at or below zero and it has not yet been registered, call OnDeath.
+        if (m_CurrentHealth <= 0f && !m_Dead)
+        {
+            _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.deadState);
+            _TankStateMachine.deadState.OnDeath();
+        }
     }
 
 }

@@ -73,15 +73,15 @@ public class BombExplosion : MonoBehaviour
             targetRigidbody.AddExplosionForce (m_ExplosionForce, transform.position, m_ExplosionRadius);
 
             // Find the TankHealth script associated with the rigidbody.
-            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth> ();
+            TankManager tankManager = targetRigidbody.GetComponent<TankManager> ();
 
             // If there is no TankHealth script attached to the gameobject, go on to the next collider.
-            if (targetHealth != null)
+            if (tankManager != null)
             {
                 float damage = CalculateDamage (targetRigidbody.position);
 
                 // Deal this damage to the tank.
-                targetHealth.TakeDamage (damage);
+                tankManager.TakeDamage (damage);
             }
         }
 
