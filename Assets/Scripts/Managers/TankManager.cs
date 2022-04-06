@@ -85,9 +85,18 @@ public class TankManager : MonoBehaviour
         m_Dead = false;
 
         SetHealthUI();
+        SetTankInitialColour();
         
-        _TankStateMachine.ChangeState(_TankStateMachine.GetInitialState(), _TankStateMachine.moveState);
+        _TankStateMachine.ChangeState(_TankStateMachine.moveState);
 
+    }
+
+    private void SetTankInitialColour()
+    {
+        if(m_PlayerNumber == 1)
+            m_PlayerColor = Color.red;
+        else if(m_PlayerNumber == 2)
+            m_PlayerColor = Color.blue;
     }
 
 
@@ -116,6 +125,8 @@ public class TankManager : MonoBehaviour
 
         gameObject.SetActive(false);
         gameObject.SetActive(true);
+        Setup();
+//        m_CurrentHealth = m_StartingHealth;
     }
     
     private void Update()
@@ -127,7 +138,7 @@ public class TankManager : MonoBehaviour
         m_AimSlider.value = m_MinLaunchForce;
         if (Input.GetButtonDown(m_BombPlantButton))
         {
-            _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
+            _TankStateMachine.ChangeState(_TankStateMachine.shootState);
             _TankStateMachine.shootState.PlantBomb();
         }
         else
@@ -135,7 +146,7 @@ public class TankManager : MonoBehaviour
             // If the max force has been exceeded and the shell hasn't yet been launched...
             if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
             {
-                _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
+                _TankStateMachine.ChangeState(_TankStateMachine.shootState);
                 // ... use the max force and launch the shell.
                 m_CurrentLaunchForce = m_MaxLaunchForce;
                 _TankStateMachine.shootState.Fire ();
@@ -162,7 +173,7 @@ public class TankManager : MonoBehaviour
             // Otherwise, if the fire button is released and the shell hasn't been launched yet...
             else if (Input.GetButtonUp (m_FireButton) && !m_Fired)
             {
-                _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.shootState);
+                _TankStateMachine.ChangeState(_TankStateMachine.shootState);
                 // ... launch the shell.
                 _TankStateMachine.shootState.Fire ();
             }
@@ -198,7 +209,7 @@ public class TankManager : MonoBehaviour
         // If the current health is at or below zero and it has not yet been registered, call OnDeath.
         if (m_CurrentHealth <= 0f && !m_Dead)
         {
-            _TankStateMachine.ChangeState(_TankStateMachine.moveState, _TankStateMachine.deadState);
+            _TankStateMachine.ChangeState(_TankStateMachine.deadState);
             _TankStateMachine.deadState.OnDeath();
         }
     }

@@ -101,7 +101,7 @@ public class Shoot : BaseState
 
         // Reset the launch force.  This is a precaution in case of missing button events.
         m_CurrentLaunchForce = _TankManager.m_MinLaunchForce;
-        _TankStateMachine.ChangeState(_TankStateMachine.shootState, _TankStateMachine.moveState);
+        _TankStateMachine.ChangeState(_TankStateMachine.moveState);
 
     }
 
@@ -145,7 +145,7 @@ public class Shoot : BaseState
             Debug.Log("GameInfo : Failed to get pooled bomb Instance");
             return;
         }
-        _TankStateMachine.ChangeState(_TankStateMachine.shootState, _TankStateMachine.moveState);
+        _TankStateMachine.ChangeState(_TankStateMachine.moveState);
     }
     
     private void CreatePooledBomb()

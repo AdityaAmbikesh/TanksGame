@@ -25,11 +25,8 @@ public class StateMachine
             currentState.UpdatePhysics();
     }
 
-    public void ChangeState(BaseState curState, BaseState newState)
+    public void ChangeState(BaseState newState)
     {
-        Debug.Log((newState == null).ToString());
-        curState.Exit();
-
         currentState = newState;
         currentState.Enter();
     }
