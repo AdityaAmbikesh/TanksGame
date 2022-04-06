@@ -5,7 +5,6 @@ public class ShellExplosion : MonoBehaviour
 {
     public LayerMask m_TankMask;
     public ParticleSystem m_ExplosionParticles;       
-//    public AudioSource m_ExplosionAudio;              
     public float m_MaxDamage = 100f;                  
     public float m_ExplosionForce = 1000f;            
     public float m_MaxLifeTime = 2f;                  
@@ -38,21 +37,18 @@ public class ShellExplosion : MonoBehaviour
                 targetRigidbody.AddExplosionForce (m_ExplosionForce, transform.position, m_ExplosionRadius);
 
                 // Find the TankHealth script associated with the rigidbody.
-                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth> ();
+                TankManager tankManager = targetRigidbody.GetComponent<TankManager> ();
 
                 // If there is no TankHealth script attached to the gameobject, go on to the next collider.
-                if (!targetHealth)
+                if (!tankManager)
                     continue;
 
                 // Calculate the amount of damage the target should take based on it's distance from the shell.
                 float damage = CalculateDamage (targetRigidbody.position);
 
                 // Deal this damage to the tank.
-                targetHealth.TakeDamage (damage);
+                tankManager.TakeDamage (damage);
             }
-
-            // Unparent the particles from the shell.
-//            m_ExplosionParticles.transform.parent = null;
 
             // Play the particle system.
             m_ExplosionParticles.Play();

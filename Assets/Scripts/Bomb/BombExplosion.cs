@@ -37,11 +37,6 @@ public class BombExplosion : MonoBehaviour
             }
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        Debug.Log(other.gameObject.name);
-    }
-
 
     private float CalculateDamage(Vector3 targetPosition)
     {
@@ -73,27 +68,24 @@ public class BombExplosion : MonoBehaviour
             targetRigidbody.AddExplosionForce (m_ExplosionForce, transform.position, m_ExplosionRadius);
 
             // Find the TankHealth script associated with the rigidbody.
-            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth> ();
+            TankManager tankManager = targetRigidbody.GetComponent<TankManager> ();
 
             // If there is no TankHealth script attached to the gameobject, go on to the next collider.
-            if (targetHealth != null)
+            if (tankManager != null)
             {
                 float damage = CalculateDamage (targetRigidbody.position);
 
                 // Deal this damage to the tank.
-                targetHealth.TakeDamage (damage);
+                tankManager.TakeDamage (damage);
             }
         }
 
         // Play the particle system.
         m_ExplosionParticles.Play();
 
-        // Once the particles have finished, destroy the gameobject they are on.
         ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-        // Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
         StartCoroutine(SetInactiveAfterLifetime(mainModule.duration));
 
-        //gameObject.SetActive(false);
         gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
