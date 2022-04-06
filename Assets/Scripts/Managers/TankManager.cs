@@ -46,13 +46,18 @@ public class TankManager : MonoBehaviour
     
     [HideInInspector] public ParticleSystem m_ExplosionParticles;   
     private float m_CurrentHealth;  
-    [HideInInspector] public bool m_Dead;  
+    [HideInInspector] public bool m_Dead;
 
+    [HideInInspector]public int roundNumber;
 
     public void Setup()
     {
-        _TankStateMachine = new TankStateMachine();
-        _TankStateMachine.Setup(this);
+        if (_TankStateMachine == null)
+        {
+            _TankStateMachine = new TankStateMachine();
+            _TankStateMachine.Setup(this);
+        }
+
         
         m_CurrentLaunchForce = m_MinLaunchForce;
         m_AimSlider.value = m_MinLaunchForce;

@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     private List<TankManager> m_Tanks;           
 
 
-    private int m_RoundNumber;              
+    [HideInInspector] public int m_RoundNumber;              
     private WaitForSeconds m_StartWait;     
     private WaitForSeconds m_EndWait;       
     private TankManager m_RoundWinner;
@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
             tankManager.m_PlayerNumber = i + 1;
             tankManager.m_SpawnPoint = spawnPoints[i];
             tankManager.Setup();
+            tankManager.roundNumber = m_RoundNumber;
             allTanks.Add(tankManager);
         }
 

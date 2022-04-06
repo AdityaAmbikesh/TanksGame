@@ -26,8 +26,12 @@ public class Shoot : BaseState
         bombPlantTransform = _TankManager.m_BombPlantTransform;
         numberOfPooledObjects = _TankManager.numberOfPooledObjects;
         m_CurrentLaunchForce = _TankManager.m_CurrentLaunchForce;
-        CreatePooledShells();
-        CreatePooledBomb();
+        if (_TankManager.roundNumber == 0)
+        {
+            CreatePooledShells();
+            CreatePooledBomb();
+        }
+        
     }
     public override void Enter()
     {
