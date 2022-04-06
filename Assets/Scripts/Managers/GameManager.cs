@@ -50,9 +50,6 @@ public class GameManager : MonoBehaviour
             tankManager.m_SpawnPoint = spawnPoints[i];
             tankManager.Setup();
             allTanks.Add(tankManager);
-//                Instantiate(m_TankPrefab, spawnPoints[i].position, spawnPoints[i].rotation) as;
-//            m_Tanks[i].m_PlayerNumber = i + 1;
-//            m_Tanks[i].Setup();
         }
 
         m_Tanks = allTanks;

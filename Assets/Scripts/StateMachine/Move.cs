@@ -6,7 +6,6 @@ public class Move : BaseState
 {
     private TankStateMachine _TankStateMachine;
     
-    // all these vars need to placed properly from tankmanager
     private float m_MovementInputValue;    
     private float m_TurnInputValue; 
     private float m_Speed = 12f;            
@@ -23,17 +22,14 @@ public class Move : BaseState
     
     public override void Enter()
     {
+        EnableControl();
         base.Enter();
-        
-        Debug.Log("in move state enter");
-        // do some basic initialisations like reset all
-        
     }
     
     public void MoveTank()
     {
         // Adjust the position of the tank based on the player's input.
-        // Use Lerp to smooth the transition
+        // Try Lerp to smooth the transition
         Vector3 diffVec = _TankManager.transform.forward * _TankManager.m_MovementInputValue * m_Speed * Time.deltaTime;
         _TankManager.m_Rigidbody.MovePosition(_TankManager.m_Rigidbody.position + diffVec);
     }
@@ -48,10 +44,13 @@ public class Move : BaseState
         _TankManager.m_Rigidbody.MoveRotation(_TankManager.m_Rigidbody.rotation * rotation);
     }
     
+    public void EnableControl()
+    {
+        // TODO :: enable tank controls
+    }
+    
     public override void UpdateLogic()
     {
-        //on click of a button goto move state
         base.UpdateLogic();
-//        stateMachine.ChangeState(_TankStateMachine.moveState);
     }
 }

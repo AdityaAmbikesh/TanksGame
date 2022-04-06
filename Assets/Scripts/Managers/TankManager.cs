@@ -9,13 +9,8 @@ public class TankManager : MonoBehaviour
     [HideInInspector] public Transform m_SpawnPoint;         
     [HideInInspector] public int m_PlayerNumber;             
     [HideInInspector] public string m_ColoredPlayerText;
-//    [HideInInspector] public GameObject m_Instance;          
     [HideInInspector] public int m_Wins;   
     
-//    [HideInInspector] public Idle idleState;
-//    [HideInInspector] public Move moveState;
-//    [HideInInspector] public Shoot shootState;
-
     public float m_MinLaunchForce = 15f; 
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
@@ -33,11 +28,7 @@ public class TankManager : MonoBehaviour
     public Color m_ZeroHealthColor = Color.red;    
     public GameObject m_ExplosionPrefab;
 
-
-//    [HideInInspector] public TankMovement m_Movement;       
-//    [HideInInspector] public TankShooting m_Shooting;
-//    [HideInInspector] public GameObject m_CanvasGameObject;
-    private TankStateMachine _TankStateMachine;
+    private TankStateMachine _TankStateMachine = null;
     
     private string m_FireButton;
     private string m_BombPlantButton;
@@ -65,7 +56,6 @@ public class TankManager : MonoBehaviour
         
         m_CurrentLaunchForce = m_MinLaunchForce;
         m_AimSlider.value = m_MinLaunchForce;
-        Debug.Log("m_PlayerNumber = " + m_PlayerNumber);
         m_FireButton = "Fire" + m_PlayerNumber;
         m_BombPlantButton = "Plant" + m_PlayerNumber;
 
@@ -75,7 +65,6 @@ public class TankManager : MonoBehaviour
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
         m_Rigidbody = GetComponent<Rigidbody>();
         transform = GetComponent<Transform>();
-        Debug.Log((_TankStateMachine.shootState == null).ToString());
         
         m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
 
@@ -154,13 +143,9 @@ public class TankManager : MonoBehaviour
             // Otherwise, if the fire button has just started being pressed...
             else if (Input.GetButtonDown (m_FireButton))
             {
-                // ... reset the fired flag and reset the launch force.
                 m_Fired = false;
                 m_CurrentLaunchForce = m_MinLaunchForce;
 
-                // Change the clip to the charging clip and start it playing.
-//            m_ShootingAudio.clip = m_ChargingClip;
-//            m_ShootingAudio.Play ();
             }
             // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
             else if (Input.GetButton (m_FireButton) && !m_Fired)

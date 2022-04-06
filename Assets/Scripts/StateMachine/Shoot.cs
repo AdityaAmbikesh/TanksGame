@@ -6,32 +6,9 @@ public class Shoot : BaseState
 {
     private TankStateMachine _TankStateMachine;
     
-//    public int m_PlayerNumber = 1;       
-//    public Rigidbody m_Shell;            
-//    public Rigidbody m_Bomb;            
-//    public Transform m_FireTransform;    
-//    public Transform m_BombPlantTransform;    
-//    public Slider m_AimSlider;
-
-    // this number will be per tank, can optimise to global pool
-    // from GameManager(with * number of tanks spawned)
-//    public int numberOfPooledObjects = 12;
-//    public AudioSource m_ShootingAudio;  
-//    public AudioClip m_ChargingClip;     
-//    public AudioClip m_FireClip;         
-//    public float m_MinLaunchForce = 15f; 
-//    public float m_MaxLaunchForce = 30f; 
-//    public float m_MaxChargeTime = 0.75f;
-
     [HideInInspector] public List<Rigidbody> pooledShells;
     [HideInInspector] public List<Rigidbody> pooledBombs;
     
-//    private string m_FireButton;
-//    private string m_BombPlantButton;
-//    private float m_CurrentLaunchForce;  
-//    private float m_ChargeSpeed;         
-//    private bool m_Fired;
-
     private TankManager _TankManager;
     private Transform fireTransform;
     private Transform bombPlantTransform;
@@ -42,17 +19,8 @@ public class Shoot : BaseState
     
     public Shoot(TankStateMachine stateMachine, TankManager tankManager) : base("Shoot", stateMachine)
     {
-        Debug.Log("shoot initailsed");
         _TankStateMachine = stateMachine;
         _TankManager = tankManager;
-        
-//        m_CurrentLaunchForce = m_MinLaunchForce;
-//        m_AimSlider.value = m_MinLaunchForce;
-//        
-//        m_FireButton = "Fire" + m_PlayerNumber;
-//        m_BombPlantButton = "Plant" + m_PlayerNumber;
-//
-//        m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
  
         fireTransform = _TankManager.m_FireTransform;
         bombPlantTransform = _TankManager.m_BombPlantTransform;
@@ -63,9 +31,7 @@ public class Shoot : BaseState
     }
     public override void Enter()
     {
-        Debug.Log("in shoot enter");
         base.Enter();
-        // do some basic initialisations like reset all
     }
     
     public override void UpdateLogic()
@@ -110,7 +76,7 @@ public class Shoot : BaseState
         pooledShells = new List<Rigidbody>();
         for (int i = 0; i < numberOfPooledObjects; i++)
         {
-            Rigidbody shell = Instantiate(_TankManager.m_Shell);
+            Rigidbody shell = GameObject.Instantiate(_TankManager.m_Shell);
             shell.gameObject.SetActive(false);
             pooledShells.Add(shell);
             
@@ -153,7 +119,7 @@ public class Shoot : BaseState
         pooledBombs = new List<Rigidbody>();
         for (int i = 0; i < _TankManager.numberOfPooledObjects; i++)
         {
-            Rigidbody bomb = Instantiate(_TankManager.m_Bomb);
+            Rigidbody bomb = GameObject.Instantiate(_TankManager.m_Bomb);
             bomb.gameObject.SetActive(false);
             pooledBombs.Add(bomb);
             

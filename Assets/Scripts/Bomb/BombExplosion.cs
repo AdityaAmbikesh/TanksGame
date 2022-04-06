@@ -37,11 +37,6 @@ public class BombExplosion : MonoBehaviour
             }
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        Debug.Log(other.gameObject.name);
-    }
-
 
     private float CalculateDamage(Vector3 targetPosition)
     {
@@ -88,12 +83,9 @@ public class BombExplosion : MonoBehaviour
         // Play the particle system.
         m_ExplosionParticles.Play();
 
-        // Once the particles have finished, destroy the gameobject they are on.
         ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-        // Destroy (m_ExplosionParticles.gameObject, mainModule.duration);
         StartCoroutine(SetInactiveAfterLifetime(mainModule.duration));
 
-        //gameObject.SetActive(false);
         gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
